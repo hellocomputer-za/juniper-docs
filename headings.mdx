@@ -1,0 +1,279 @@
+# Headings Component
+
+## Description
+
+A comprehensive typography system for headings built with Bootstrap framework. This component provides semantic heading elements (H1-H6) and display classes for enhanced visual hierarchy. The headings use Bootstrap's typography utilities and can be easily customized with animations, responsive sizing, and advanced styling options through the Juniper UI system.
+
+## HTML Structure
+
+The headings component uses standard HTML semantic elements with Bootstrap classes and optional AOS animations:
+
+```html
+<!-- Standard Headings -->
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+<h3>Heading 3</h3>
+<h4>Heading 4</h4>
+<h5>Heading 5</h5>
+<h6>Heading 6</h6>
+
+<!-- Display Headings -->
+<h1 class="display-1">Display 1</h1>
+<h2 class="display-2">Display 2</h2>
+<h3 class="display-3">Display 3</h3>
+<h4 class="display-4">Display 4</h4>
+<h5 class="display-5">Display 5</h5>
+<h6 class="display-6">Display 6</h6>
+```
+
+### Nunjucks Template Implementation
+
+When using with animations and dynamic content:
+
+```nunjucks
+{% import "@juniper/ui/animations.html" as animations %}
+
+<!-- Animated Heading -->
+<div {{ animations.el(data.widget) }}>
+  <{{ data.heading.level | default('h2') }} class="{{ data.heading.classes }}">
+    {{ data.heading.text }}
+  </{{ data.heading.level | default('h2') }}>
+</div>
+
+<!-- Page Header Structure -->
+<div class="page-header">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="mb-3">{{ data.title }}</h1>
+    </div>
+  </div>
+</div>
+```
+
+### Responsive Heading Structure
+
+```html
+<!-- Responsive headings with utility classes -->
+<h1 class="fs-1 fs-md-2 fs-lg-1">Responsive Heading</h1>
+<h2 class="fw-bold text-primary">Styled Heading</h2>
+<h3 class="text-uppercase ls-2">Uppercase Heading</h3>
+```
+
+### HTML Attributes Explanation
+
+- `{{ animations.el(data.widget) }}`: Juniper UI animation element helper
+- `data-aos`: AOS animation effect type (fade-up, slide-in, etc.)
+- `data-aos-offset`: Pixel offset from the original trigger point
+- `data-aos-delay`: Animation delay in milliseconds
+- `data-aos-duration`: Animation duration in milliseconds
+- `data-aos-easing`: Animation easing function
+- `display-{1-6}`: Bootstrap display classes for larger headings
+- `fs-{1-6}`: Bootstrap font-size utility classes
+- `fw-{weight}`: Bootstrap font-weight utilities (light, normal, bold, etc.)
+- `text-{color}`: Bootstrap color utilities
+- `text-uppercase`: Bootstrap text transformation utility
+- `ls-{spacing}`: Letter spacing utility classes
+
+## SCSS Styling
+
+Comprehensive SCSS for customizing heading appearance and behavior:
+
+```scss
+// Heading Variables
+$headings-margin-bottom: 0.5rem !default;
+$headings-font-family: null !default;
+$headings-font-style: null !default;
+$headings-font-weight: 500 !default;
+$headings-line-height: 1.2 !default;
+$headings-color: inherit !default;
+
+// Display heading variables
+$display-font-sizes: (
+  1: 5rem,
+  2: 4.5rem,
+  3: 4rem,
+  4: 3.5rem,
+  5: 3rem,
+  6: 2.5rem
+) !default;
+
+$display-font-family: null !default;
+$display-font-style: null !default;
+$display-font-weight: 300 !default;
+$display-line-height: $headings-line-height !default;
+
+// Custom Heading Styles
+.heading-component {
+  // Animated headings
+  .heading-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+    
+    &.aos-animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  // Gradient text effect
+  .heading-gradient {
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    @supports not (-webkit-background-clip: text) {
+      color: var(--bs-primary);
+    }
+  }
+  
+  // Underline effect
+  .heading-underline {
+    position: relative;
+    display: inline-block;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -0.25rem;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--bs-primary);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    
+    &.aos-animate::after {
+      transform: scaleX(1);
+    }
+  }
+  
+  // Typography enhancements
+  .heading-serif {
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  
+  .heading-condensed {
+    font-stretch: condensed;
+    letter-spacing: -0.025em;
+  }
+  
+  .heading-spaced {
+    letter-spacing: 0.1em;
+  }
+}
+
+// Responsive typography
+@include media-breakpoint-down(md) {
+  .display-1 { font-size: 3.5rem; }
+  .display-2 { font-size: 3rem; }
+  .display-3 { font-size: 2.5rem; }
+  .display-4 { font-size: 2rem; }
+  .display-5 { font-size: 1.75rem; }
+  .display-6 { font-size: 1.5rem; }
+}
+
+@include media-breakpoint-down(sm) {
+  h1, .h1 { font-size: 1.75rem; }
+  h2, .h2 { font-size: 1.5rem; }
+  h3, .h3 { font-size: 1.25rem; }
+  
+  .display-1 { font-size: 2.5rem; }
+  .display-2 { font-size: 2rem; }
+  .display-3 { font-size: 1.75rem; }
+  .display-4 { font-size: 1.5rem; }
+  .display-5 { font-size: 1.25rem; }
+  .display-6 { font-size: 1.125rem; }
+}
+
+// Print styles
+@media print {
+  .heading-component {
+    .heading-gradient {
+      -webkit-text-fill-color: unset;
+      background: none;
+      color: var(--bs-dark) !important;
+    }
+    
+    .heading-underline::after {
+      display: none;
+    }
+  }
+}
+```
+
+## Animations
+
+The headings component utilizes AOS (Animate On Scroll) library for scroll-triggered animations:
+
+### Nunjucks Animation Template Implementation
+
+```nunjucks
+{% import "@juniper/ui/animations.html" as animations %}
+
+<!-- Animated heading with AOS -->
+<div {{ animations.el({
+  aos: "fade-up",
+  duration: 800,
+  delay: 200
+}) }}>
+  <h1 class="display-2 heading-gradient">Animated Heading</h1>
+</div>
+
+<!-- Staggered heading animation -->
+<div {{ animations.el({
+  aos: "fade-right",
+  duration: 600,
+  delay: 100
+}) }}>
+  <h2 class="heading-underline">Secondary Heading</h2>
+</div>
+```
+
+### Available AOS Animation Effects
+
+#### Fade animations:
+- `fade`
+- `fade-up`
+- `fade-down`
+- `fade-left`
+- `fade-right`
+- `fade-up-right`
+- `fade-up-left`
+- `fade-down-right`
+- `fade-down-left`
+
+#### Slide animations:
+- `slide-up`
+- `slide-down`
+- `slide-left`
+- `slide-right`
+
+#### Zoom animations:
+- `zoom-in`
+- `zoom-in-up`
+- `zoom-in-down`
+- `zoom-in-left`
+- `zoom-in-right`
+
+## Dependencies
+
+### Required Dependencies
+
+```json
+{
+  "bootstrap": "^5.3.3",
+  "aos": "^2.3.4"
+}
+```
+
+### Juniper UI Templates
+- `@juniper/ui/animations.html`
+
+### Optional Enhancements
+- Custom web fonts for enhanced typography
+- Additional AOS plugins for specialized animations
+- Custom SCSS for advanced text effects

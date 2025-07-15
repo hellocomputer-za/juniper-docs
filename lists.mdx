@@ -1,0 +1,439 @@
+# Lists Component
+
+## Description
+
+A comprehensive list system for ordered and unordered lists built with Bootstrap framework. This component provides semantic list elements with enhanced styling options, including custom bullet points, numbering systems, and interactive states. The lists use Bootstrap's utility classes and can be easily customized with animations, spacing, and advanced styling options through the Juniper UI system.
+
+## HTML Structure
+
+The lists component uses semantic HTML elements with Bootstrap classes and optional AOS animations:
+
+```html
+<!-- Unordered Lists -->
+<ul class="list-unstyled">
+  <li>First item</li>
+  <li>Second item</li>
+  <li>Third item</li>
+</ul>
+
+<ul class="list-inline">
+  <li class="list-inline-item">Item 1</li>
+  <li class="list-inline-item">Item 2</li>
+  <li class="list-inline-item">Item 3</li>
+</ul>
+
+<!-- Ordered Lists -->
+<ol class="list-decimal">
+  <li>First ordered item</li>
+  <li>Second ordered item</li>
+  <li>Third ordered item</li>
+</ol>
+
+<!-- Description Lists -->
+<dl class="row">
+  <dt class="col-sm-3">Term</dt>
+  <dd class="col-sm-9">Description for the term</dd>
+  <dt class="col-sm-3">Another term</dt>
+  <dd class="col-sm-9">Description for another term</dd>
+</dl>
+```
+
+### Nunjucks Template Implementation
+
+When using with dynamic content and animations:
+
+```nunjucks
+{% import "@juniper/ui/animations.html" as animations %}
+
+<!-- Animated List -->
+<div {{ animations.el(data.widget) }}>
+  <ul class="list-custom">
+    {% for item in data.listItems %}
+      <li class="list-item-animated" 
+          data-aos="fade-up" 
+          data-aos-delay="{{ loop.index0 * 100 }}">
+        {{ item.text }}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- Link List Integration -->
+{% import "@juniper/ui/anchor.html" as anchor %}
+
+<ul class="list-links">
+  {% for link in data.links %}
+    <li>
+      {% render anchor.regular(link, "list-link-item") %}
+    </li>
+  {% endfor %}
+</ul>
+```
+
+### List Group Structure (Bootstrap Components)
+
+```html
+<!-- Basic List Group -->
+<div class="list-group">
+  <a href="#" class="list-group-item list-group-item-action active">
+    Active list item
+  </a>
+  <a href="#" class="list-group-item list-group-item-action">
+    Second list item
+  </a>
+  <a href="#" class="list-group-item list-group-item-action">
+    Third list item
+  </a>
+</div>
+
+<!-- List Group with Content -->
+<div class="list-group">
+  <div class="list-group-item list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">List group item heading</h5>
+      <small>3 days ago</small>
+    </div>
+    <p class="mb-1">Some placeholder content in a paragraph.</p>
+    <small>And some small print.</small>
+  </div>
+</div>
+```
+
+### HTML Attributes Explanation
+
+- `{{ animations.el(data.widget) }}`: Juniper UI animation element helper
+- `data-aos`: AOS animation effect type (fade-up, slide-in, etc.)
+- `data-aos-delay`: Staggered animation delay for list items
+- `data-aos-duration`: Animation duration in milliseconds
+- `list-unstyled`: Removes default list styling
+- `list-inline`: Creates horizontal list layout
+- `list-inline-item`: Individual inline list items
+- `list-group`: Bootstrap component for interactive lists
+- `list-group-item`: Individual list group items
+- `list-group-item-action`: Adds hover/focus states
+- `active`: Marks the current/active list item
+
+## SCSS Styling
+
+Comprehensive SCSS for customizing list appearance and behavior:
+
+```scss
+// List Variables
+$list-item-padding: 0.5rem 0 !default;
+$list-item-margin: 0.25rem 0 !default;
+$list-marker-color: var(--bs-primary) !default;
+$list-link-color: var(--bs-body-color) !default;
+$list-link-hover-color: var(--bs-primary) !default;
+
+// Custom List Styles
+.list-component {
+  // Custom bullet styles
+  .list-custom {
+    list-style: none;
+    padding-left: 0;
+    
+    li {
+      position: relative;
+      padding: $list-item-padding;
+      margin: $list-item-margin;
+      padding-left: 1.5rem;
+      
+      &::before {
+        content: '•';
+        color: $list-marker-color;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        font-size: 1.2em;
+      }
+      
+      &:hover::before {
+        transform: scale(1.2);
+        transition: transform 0.2s ease;
+      }
+    }
+  }
+  
+  // Custom numbered list
+  .list-numbered {
+    list-style: none;
+    counter-reset: list-counter;
+    padding-left: 0;
+    
+    li {
+      position: relative;
+      padding: $list-item-padding;
+      margin: $list-item-margin;
+      padding-left: 2rem;
+      counter-increment: list-counter;
+      
+      &::before {
+        content: counter(list-counter);
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        width: 1.5rem;
+        height: 1.5rem;
+        background: $list-marker-color;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  // Animated list items
+  .list-item-animated {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.6s ease-out;
+    
+    &.aos-animate {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  // Link lists
+  .list-links {
+    list-style: none;
+    padding-left: 0;
+    
+    li {
+      border-bottom: 1px solid var(--bs-border-color);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    
+    .list-link-item {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: $list-link-color;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        color: $list-link-hover-color;
+        background-color: var(--bs-light);
+        transform: translateX(5px);
+      }
+      
+      &::after {
+        content: '→';
+        float: right;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.3s ease;
+      }
+      
+      &:hover::after {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+  
+  // Icon lists
+  .list-icons {
+    list-style: none;
+    padding-left: 0;
+    
+    li {
+      position: relative;
+      padding: 0.5rem 0;
+      padding-left: 2rem;
+      
+      &::before {
+        content: attr(data-icon);
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        color: $list-marker-color;
+        font-family: 'bootstrap-icons';
+        font-size: 1.2em;
+      }
+    }
+  }
+  
+  // Checklist styles
+  .list-checklist {
+    list-style: none;
+    padding-left: 0;
+    
+    li {
+      position: relative;
+      padding: 0.5rem 0;
+      padding-left: 2rem;
+      
+      &::before {
+        content: '☐';
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        font-size: 1.2em;
+        color: var(--bs-secondary);
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+      
+      &.completed {
+        text-decoration: line-through;
+        opacity: 0.7;
+        
+        &::before {
+          content: '☑';
+          color: var(--bs-success);
+        }
+      }
+    }
+  }
+}
+
+// Enhanced List Group Styles
+.list-group {
+  .list-group-item {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    &.active {
+      background-color: var(--bs-primary);
+      border-color: var(--bs-primary);
+      
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--bs-warning);
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@include media-breakpoint-down(md) {
+  .list-component {
+    .list-custom li,
+    .list-numbered li {
+      padding: 0.375rem 0;
+      padding-left: 1.25rem;
+    }
+    
+    .list-numbered li::before {
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .list-component {
+    .list-links .list-link-item::after {
+      display: none;
+    }
+    
+    .list-custom li::before,
+    .list-numbered li::before {
+      color: var(--bs-dark) !important;
+      background: transparent !important;
+      border: 1px solid var(--bs-dark) !important;
+    }
+  }
+}
+```
+
+## Animations
+
+The lists component utilizes AOS (Animate On Scroll) library for scroll-triggered animations:
+
+### Nunjucks Animation Template Implementation
+
+```nunjucks
+{% import "@juniper/ui/animations.html" as animations %}
+
+<!-- Animated list with staggered items -->
+<div {{ animations.el({
+  aos: "fade-up",
+  duration: 600
+}) }}>
+  <ul class="list-custom">
+    {% for item in data.items %}
+      <li data-aos="slide-right" 
+          data-aos-delay="{{ loop.index0 * 150 }}"
+          data-aos-duration="500">
+        {{ item.text }}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- List group with animation -->
+<div class="list-group" 
+     data-aos="zoom-in" 
+     data-aos-duration="800">
+  {% for item in data.groupItems %}
+    <div class="list-group-item" 
+         data-aos="fade-left" 
+         data-aos-delay="{{ loop.index0 * 100 }}">
+      {{ item.content }}
+    </div>
+  {% endfor %}
+</div>
+```
+
+### Available AOS Animation Effects
+
+#### Fade animations:
+- `fade`
+- `fade-up`
+- `fade-down`
+- `fade-left`
+- `fade-right`
+
+#### Slide animations:
+- `slide-up`
+- `slide-down`
+- `slide-left`
+- `slide-right`
+
+#### Zoom animations:
+- `zoom-in`
+- `zoom-in-up`
+- `zoom-in-down`
+- `zoom-in-left`
+- `zoom-in-right`
+
+## Dependencies
+
+### Required Dependencies
+
+```json
+{
+  "bootstrap": "^5.3.3",
+  "aos": "^2.3.4"
+}
+```
+
+### Juniper UI Templates
+- `@juniper/ui/animations.html`
+- `@juniper/ui/anchor.html` (for link lists)
+
+### Optional Enhancements
+- Bootstrap Icons for custom list markers
+- Custom SCSS for advanced list styling
+- Additional AOS plugins for specialized animations

@@ -1,0 +1,222 @@
+# Button Widget Component
+
+## Description
+
+A versatile and customizable button component built with Bootstrap framework. This widget provides multiple button styles, sizes, and interactive states for various user actions. The button uses Bootstrap's utility classes and can be easily customized with animations, icons, and advanced styling options through the Juniper UI system.
+
+## HTML Structure
+
+The button widget uses Juniper UI templates with Bootstrap classes and AOS animations through Nunjucks:
+
+```nunjucks
+{% import "@juniper/ui/button.html" as _button %}
+{% import "@juniper/ui/animations.html" as animations %}
+
+{% for button in data.widget.button %}
+<div {{ animations.el(data.widget) }}>
+	{% render _button.link(button) %}
+</div>
+{% endfor %}
+```
+
+### Button Template Structure
+
+The button widget relies on the `@juniper/ui/button.html` template which uses anchor fragments:
+
+```nunjucks
+{# button.html - link fragment #}
+{% fragment link(button, loop) %}
+	{% set btnSize = ' btn-' + button.size if button.size %}
+	{% set styles = { color: button.textLinkColor } if button.textLinkColor %}
+	{% render anchor.regular
+    (
+      button, 
+      'btn ' + button.style + btnSize + ' ' + button.animation + (' ms-3' if loop.index0 === 1), 
+      button.icon,
+      button.iconPosition,
+      styles
+    ) %}
+{% endfragment %}
+```
+
+### Anchor Template Integration
+
+The button uses the `@juniper/ui/anchor.html` template for link functionality:
+
+```nunjucks
+{# anchor.html - regular fragment #}
+{% fragment regular(link, className, iconName, iconPosition, styles) %}
+	{% import "@juniper/ui/icon.html" as icon %}
+	
+	<a
+		href="{{ apos['helpers'].getLink(link) }}{{ '#' + link.anchorLink | replace('#', '') if link.anchorLink }}"
+		class="{{ className }}"
+		{% if link.ariaLabel %} 
+			title="{{ link.ariaLabel }}" 
+			aria-label="{{ link.ariaLabel }}" 
+		{% endif %}
+		{% if link.linkTarget.length %}
+			target="_blank"
+		{% endif %}
+		{% if styles %}
+			style="{% for key, value in styles %}{{ key }}: {{ value }};{% endfor %}"
+		{% endif %}
+	>
+		{% if iconName and iconPosition === 'l' %}
+			{{ icon.el(iconName) }}
+		{% endif %}
+		
+		{% if iconName %}<span class="me-1">{% endif %}
+		{{ link.linkText }}
+		{% if iconName %}</span>{% endif %}
+		
+		{% if iconName and iconPosition === 'r' %}
+			{{ icon.el(iconName) }}
+		{% endif %}
+	</a>
+{% endfragment %}
+```
+
+### HTML Attributes Explanation
+
+- `{{ animations.el(data.widget) }}`: Juniper UI animation element helper
+- `data-aos`: AOS animation effect type (fade-up, slide-in, etc.)
+- `data-aos-offset`: Pixel offset from the original trigger point
+- `data-aos-delay`: Animation delay in milliseconds
+- `data-aos-duration`: Animation duration in milliseconds
+- `data-aos-easing`: Animation easing function
+- `data-button-widget`: JavaScript selector for widget functionality
+- `btn`: Bootstrap button base class
+- `btn-{variant}`: Bootstrap button color variants (primary, secondary, etc.)
+- `btn-outline-{variant}`: Bootstrap outline button variants
+- `btn-{size}`: Bootstrap button size variants (sm, lg)
+- `target`: Link target attribute (_blank, _self, etc.)
+- `disabled`: Disables button interaction
+- `aria-label`: Accessibility label for screen readers
+
+## SCSS Styling
+
+Comprehensive SCSS for customizing the button widget appearance and behavior:
+
+```scss
+// Button Widget Variables
+$button-widget-gap: 1rem !default;
+$button-widget-margin: 1.5rem 0 !default;
+$button-ripple-duration: 0.6s !default;
+$button-hover-transform: translateY(-2px) !default;
+$button-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !default;
+
+// Button Widget Styles
+.button-widget {
+  // Size variants
+  .btn-sm {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  }
+  
+  .btn-lg {
+    font-size: 1.125rem;
+    padding: 0.75rem 1.5rem;
+  }
+  
+  // Loading state
+  .btn-loading {
+    pointer-events: none;
+    opacity: 0.8;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: button-spin 1s linear infinite;
+    }
+    
+    .btn-text {
+      opacity: 0;
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .button-widget {
+    .btn {
+      background: transparent !important;
+      color: var(--bs-dark) !important;
+      border: 1px solid var(--bs-dark) !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+  }
+}
+```
+
+## Animations
+
+The button widget utilizes AOS (Animate On Scroll) library through a Nunjucks template system for managing animations. The animations are imported and configured through the Juniper UI animations template.
+
+### Nunjucks Animation Template Implementation
+
+The widget template imports animations and uses them with the actual button structure:
+
+```nunjucks
+{# Actual button widget implementation #}
+{% import "@juniper/ui/button.html" as _button %}
+{% import "@juniper/ui/animations.html" as animations %}
+
+{% for button in data.widget.button %}
+<div {{ animations.el(data.widget) }}>
+	{% render _button.link(button) %}
+</div>
+{% endfor %}
+```
+
+### Animation Configuration Options
+
+The widget supports various animation configurations through the data object:
+
+### Available AOS Animation Effects
+
+The widget supports all AOS animation effects:
+
+#### Fade animations:
+- `fade`
+- `fade-up`
+- `fade-down`
+- `fade-left`
+- `fade-right`
+- `fade-up-right`
+- `fade-up-left`
+- `fade-down-right`
+- `fade-down-left`
+
+#### Flip animations:
+- `flip-up`
+- `flip-down`
+- `flip-left`
+- `flip-right`
+
+#### Slide animations:
+- `slide-up`
+- `slide-down`
+- `slide-left`
+- `slide-right`
+
+#### Zoom animations:
+- `zoom-in`
+- `zoom-in-up`
+- `zoom-in-down`
+- `zoom-in-left`
+- `zoom-in-right`
+- `zoom-out`
+- `zoom-out-up`
+- `zoom-out-down`
+- `zoom-out-left`
+- `zoom-out-right`
