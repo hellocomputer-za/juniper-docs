@@ -14,12 +14,6 @@ The accordion widget uses a custom structure with Bootstrap classes and AOS anim
   {% if data.widget.animationEffects !== 'no-animation' %} 
     data-aos="{{ data.widget.animationEffects }}" 
   {% endif %} 
-  {% if data.widget.advancedAnimation === true %} 
-    data-aos-offset="{{ data.widget.animationOffset }}" 
-    data-aos-delay="{{ data.widget.animationDelay }}" 
-    data-aos-duration="{{ data.widget.animationDuration }}" 
-    data-aos-easing="{{ data.widget.animationEasing }}" 
-  {% endif %} 
   class="accordion-widget" 
   data-accordion-widget
 >
@@ -41,10 +35,6 @@ The accordion widget uses a custom structure with Bootstrap classes and AOS anim
 
 - `{{ animations.el(data.widget) }}`: Juniper UI animation element helper
 - `data-aos`: AOS animation effect type (fade-up, slide-in, etc.)
-- `data-aos-offset`: Pixel offset from the original trigger point
-- `data-aos-delay`: Animation delay in milliseconds
-- `data-aos-duration`: Animation duration in milliseconds
-- `data-aos-easing`: Animation easing function
 - `data-accordion-widget`: JavaScript selector for widget functionality
 - `accordion-btn`: Clickable header that toggles the panel
 - `accordion-panel`: Collapsible content container

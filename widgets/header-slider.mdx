@@ -1,0 +1,757 @@
+# Header Slider Widget Component
+
+## Description
+
+A responsive and interactive header slider component built with Bootstrap framework and Swiper.js. This widget provides a full-width carousel for showcasing hero content, images, and call-to-action elements. The header slider uses Bootstrap's utility classes, Swiper.js for smooth animations, and can be easily customized with SCSS variables and advanced styling options through the Juniper UI system.
+
+## HTML Structure
+
+The header slider widget uses a custom structure with Bootstrap classes, Swiper.js integration, and AOS animations through Nunjucks templates:
+
+```html
+<section 
+  {{ animations.el(data.widget) }}
+  class="header-slider-widget" 
+  data-header-slider-widget
+>
+  <div class="swiper header-swiper">
+    <div class="swiper-wrapper">
+      {% for slide in data.widget.slides %}
+        <div class="swiper-slide header-slide">
+          <div class="header-slide-background" 
+               style="background-image: url('{{ apos.attachments.url(slide.backgroundImage) }}')">
+            <div class="header-slide-overlay"></div>
+          </div>
+          <div class="header-slide-content">
+            <div class="container">
+              <div class="row align-items-center min-vh-75">
+                <div class="col-lg-6">
+                  {% if slide.heading %}
+                    <h1 class="header-slide-heading display-4 fw-bold text-white mb-4">
+                      {{ slide.heading }}
+                    </h1>
+                  {% endif %}
+                  {% if slide.subheading %}
+                    <p class="header-slide-subheading lead text-white-50 mb-4">
+                      {{ slide.subheading }}
+                    </p>
+                  {% endif %}
+                  {% if slide.buttons %}
+                    <div class="header-slide-buttons">
+                      {% for button in slide.buttons %}
+                        {% render _button.link(button) %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Navigation -->
+    {% if data.widget.showNavigation %}
+      <div class="swiper-button-next header-swiper-button-next"></div>
+      <div class="swiper-button-prev header-swiper-button-prev"></div>
+    {% endif %}
+    
+    <!-- Pagination -->
+    {% if data.widget.showPagination %}
+      <div class="swiper-pagination header-swiper-pagination"></div>
+    {% endif %}
+    
+    <!-- Scroll Indicator -->
+    {% if data.widget.showScrollIndicator %}
+      <div class="header-scroll-indicator">
+        <div class="scroll-indicator-text">Scroll Down</div>
+        <div class="scroll-indicator-arrow">
+          <i class="bi bi-chevron-down"></i>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+```
+
+### HTML Attributes Explanation
+
+- `{{ animations.el(data.widget) }}`: Juniper UI animation element helper
+- `data-header-slider-widget`: JavaScript selector for widget functionality
+- `swiper`: Swiper.js container class
+- `swiper-wrapper`: Wrapper for all slides
+- `swiper-slide`: Individual slide container
+- `header-slide`: Custom slide styling class
+- `header-slide-background`: Background image container
+- `header-slide-overlay`: Overlay for text readability
+- `header-slide-content`: Content container with text and buttons
+- `swiper-button-next/prev`: Navigation arrow buttons
+- `swiper-pagination`: Pagination dots
+- `header-scroll-indicator`: Custom scroll indicator element
+
+## JavaScript Implementation
+
+```javascript
+// Initialize header slider with Swiper.js
+document.addEventListener('DOMContentLoaded', function() {
+  const headerSlider = document.querySelector('[data-header-slider-widget] .header-swiper');
+  
+  if (headerSlider) {
+    const swiper = new Swiper(headerSlider, {
+      // Basic settings
+      loop: true,
+      effect: 'fade',
+      speed: 1000,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      
+      // Navigation
+      navigation: {
+        nextEl: '.header-swiper-button-next',
+        prevEl: '.header-swiper-button-prev',
+      },
+      
+      // Pagination
+      pagination: {
+        el: '.header-swiper-pagination',
+        clickable: true,
+        dynamicBullets: true,
+      },
+      
+      // Responsive breakpoints
+      breakpoints: {
+        320: {
+          slidesPerView: 1,
+          spaceBetween: 0,
+        },
+        768: {
+          slidesPerView: 1,
+          spaceBetween: 0,
+        },
+        1024: {
+          slidesPerView: 1,
+          spaceBetween: 0,
+        }
+      },
+      
+      // Events
+      on: {
+        init: function() {
+          console.log('Header slider initialized');
+          animateSlideContent(0);
+        },
+        slideChange: function() {
+          console.log('Slide changed to:', this.activeIndex);
+          animateSlideContent(this.activeIndex);
+        },
+        slideChangeTransitionStart: function() {
+          console.log('Slide transition started');
+        },
+        slideChangeTransitionEnd: function() {
+          console.log('Slide transition ended');
+        }
+      }
+    });
+    
+    // Custom slide content animation
+    function animateSlideContent(slideIndex) {
+      const slides = headerSlider.querySelectorAll('.swiper-slide');
+      const currentSlide = slides[slideIndex];
+      
+      if (currentSlide) {
+        const heading = currentSlide.querySelector('.header-slide-heading');
+        const subheading = currentSlide.querySelector('.header-slide-subheading');
+        const buttons = currentSlide.querySelector('.header-slide-buttons');
+        
+        // Reset animations
+        [heading, subheading, buttons].forEach(el => {
+          if (el) {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+          }
+        });
+        
+        // Animate in sequence
+        setTimeout(() => {
+          if (heading) {
+            heading.style.transition = 'all 0.8s ease-out';
+            heading.style.opacity = '1';
+            heading.style.transform = 'translateY(0)';
+          }
+        }, 300);
+        
+        setTimeout(() => {
+          if (subheading) {
+            subheading.style.transition = 'all 0.8s ease-out';
+            subheading.style.opacity = '1';
+            subheading.style.transform = 'translateY(0)';
+          }
+        }, 600);
+        
+        setTimeout(() => {
+          if (buttons) {
+            buttons.style.transition = 'all 0.8s ease-out';
+            buttons.style.opacity = '1';
+            buttons.style.transform = 'translateY(0)';
+          }
+        }, 900);
+      }
+    }
+    
+    // Scroll indicator functionality
+    const scrollIndicator = headerSlider.querySelector('.header-scroll-indicator');
+    if (scrollIndicator) {
+      scrollIndicator.addEventListener('click', function() {
+        const nextSection = headerSlider.nextElementSibling;
+        if (nextSection) {
+          nextSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    }
+    
+    // Pause autoplay on hover
+    headerSlider.addEventListener('mouseenter', function() {
+      swiper.autoplay.stop();
+    });
+    
+    headerSlider.addEventListener('mouseleave', function() {
+      swiper.autoplay.start();
+    });
+  }
+});
+
+// Swiper.js Events
+
+Swiper triggers several events you can listen for:
+
+- `init`: Fired when Swiper is initialized
+- `slideChange`: Fired when slide changes
+- `slideChangeTransitionStart`: Fired when slide transition starts
+- `slideChangeTransitionEnd`: Fired when slide transition ends
+- `autoplayStart`: Fired when autoplay starts
+- `autoplayStop`: Fired when autoplay stops
+- `touchStart`: Fired when touch/drag starts
+- `touchEnd`: Fired when touch/drag ends
+```
+
+## SCSS Styling
+
+Comprehensive SCSS for customizing the header slider appearance and behavior:
+
+```scss
+// Header Slider Variables
+$header-slider-height: 100vh !default;
+$header-slider-min-height: 600px !default;
+$header-slide-overlay-opacity: 0.4 !default;
+$header-slide-overlay-color: #000 !default;
+$header-slide-content-padding: 2rem !default;
+$header-slide-heading-color: #fff !default;
+$header-slide-subheading-color: rgba(255, 255, 255, 0.8) !default;
+$header-slider-navigation-size: 3rem !default;
+$header-slider-pagination-size: 0.75rem !default;
+$header-scroll-indicator-size: 2rem !default;
+
+// Header Slider Styles
+.header-slider-widget {
+  position: relative;
+  width: 100%;
+  height: $header-slider-height;
+  min-height: $header-slider-min-height;
+  overflow: hidden;
+  
+  // Swiper container
+  .header-swiper {
+    width: 100%;
+    height: 100%;
+    
+    .swiper-wrapper {
+      height: 100%;
+    }
+    
+    .swiper-slide {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+  
+  // Slide background
+  .header-slide-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: scale(1.1);
+    transition: transform 8s ease-out;
+    
+    .swiper-slide-active & {
+      transform: scale(1);
+    }
+  }
+  
+  // Slide overlay
+  .header-slide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity) 0%,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity * 0.7) 50%,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity * 0.3) 100%
+    );
+  }
+  
+  // Slide content
+  .header-slide-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: $header-slide-content-padding 0;
+    
+    .container {
+      width: 100%;
+    }
+  }
+  
+  // Slide typography
+  .header-slide-heading {
+    color: $header-slide-heading-color;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    
+    @include media-breakpoint-down(md) {
+      font-size: 2.5rem;
+    }
+    
+    @include media-breakpoint-down(sm) {
+      font-size: 2rem;
+    }
+  }
+  
+  .header-slide-subheading {
+    color: $header-slide-subheading-color;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    
+    @include media-breakpoint-down(md) {
+      font-size: 1.125rem;
+    }
+  }
+  
+  // Slide buttons
+  .header-slide-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    
+    .btn {
+      min-width: 140px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+    @include media-breakpoint-down(sm) {
+      flex-direction: column;
+      
+      .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+  
+  // Navigation buttons
+  .header-swiper-button-next,
+  .header-swiper-button-prev {
+    width: $header-slider-navigation-size;
+    height: $header-slider-navigation-size;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    
+    &::after {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+    
+    @include media-breakpoint-down(md) {
+      width: $header-slider-navigation-size * 0.8;
+      height: $header-slider-navigation-size * 0.8;
+      
+      &::after {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  // Pagination
+  .header-swiper-pagination {
+    bottom: 2rem;
+    
+    .swiper-pagination-bullet {
+      width: $header-slider-pagination-size;
+      height: $header-slider-pagination-size;
+      background-color: rgba(255, 255, 255, 0.5);
+      opacity: 1;
+      transition: all 0.3s ease;
+      
+      &-active {
+        background-color: #fff;
+        transform: scale(1.2);
+      }
+    }
+  }
+  
+  // Scroll indicator
+  .header-scroll-indicator {
+    position: absolute;
+    bottom: 4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateX(-50%) translateY(-5px);
+    }
+    
+    .scroll-indicator-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .scroll-indicator-arrow {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.5rem;
+      animation: bounce 2s infinite;
+      
+      i {
+        display: block;
+      }
+    }
+  }
+}
+
+// Animation keyframes
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+// Theme variations
+.header-slider-theme-dark {
+  .header-slide-overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+  }
+}
+
+.header-slider-theme-light {
+  .header-slide-overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+  }
+  
+  .header-slide-heading {
+    color: var(--bs-dark);
+    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+  }
+  
+  .header-slide-subheading {
+    color: rgba(0, 0, 0, 0.8);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+  }
+}
+
+// Responsive adjustments
+@include media-breakpoint-down(lg) {
+  .header-slider-widget {
+    height: 80vh;
+    min-height: 500px;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .header-slider-widget {
+    height: 70vh;
+    min-height: 400px;
+    
+    .header-slide-content {
+      padding: 1rem 0;
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .header-slider-widget {
+    height: 60vh;
+    min-height: 350px;
+    
+    .header-scroll-indicator {
+      bottom: 2rem;
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .header-slider-widget {
+    height: auto;
+    min-height: auto;
+    
+    .header-swiper-button-next,
+    .header-swiper-button-prev,
+    .header-swiper-pagination,
+    .header-scroll-indicator {
+      display: none;
+    }
+    
+    .header-slide-background {
+      transform: none !important;
+    }
+    
+    .header-slide-overlay {
+      background: none !important;
+    }
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .header-slider-widget {
+    .header-swiper-button-next,
+    .header-swiper-button-prev {
+      background-color: rgba(0, 0, 0, 0.3);
+      
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+}
+```
+
+## Animations
+
+The header slider widget utilizes AOS (Animate On Scroll) library and Swiper.js for smooth animations and transitions:
+
+### Nunjucks Animation Template Implementation
+
+The widget template imports animations and configures them based on widget data:
+
+```nunjucks
+{# Import animations from Juniper UI #}
+{% import "@juniper/ui/animations.html" as animations %}
+{% import "@juniper/ui/button.html" as _button %}
+
+<section 
+  {{ animations.el(data.widget) }} 
+  class="header-slider-widget" 
+  data-header-slider-widget
+>
+  <div class="swiper header-swiper">
+    <div class="swiper-wrapper">
+      {% for slide in data.widget.slides %}
+        <div class="swiper-slide header-slide">
+          <div class="header-slide-background" 
+               style="background-image: url('{{ apos.attachments.url(slide.backgroundImage) }}')">
+            <div class="header-slide-overlay"></div>
+          </div>
+          <div class="header-slide-content">
+            <div class="container">
+              <div class="row align-items-center min-vh-75">
+                <div class="col-lg-6">
+                  {% if slide.heading %}
+                    <h1 class="header-slide-heading display-4 fw-bold text-white mb-4">
+                      {{ slide.heading }}
+                    </h1>
+                  {% endif %}
+                  {% if slide.subheading %}
+                    <p class="header-slide-subheading lead text-white-50 mb-4">
+                      {{ slide.subheading }}
+                    </p>
+                  {% endif %}
+                  {% if slide.buttons %}
+                    <div class="header-slide-buttons">
+                      {% for button in slide.buttons %}
+                        {% render _button.link(button) %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Navigation -->
+    {% if data.widget.showNavigation %}
+      <div class="swiper-button-next header-swiper-button-next"></div>
+      <div class="swiper-button-prev header-swiper-button-prev"></div>
+    {% endif %}
+    
+    <!-- Pagination -->
+    {% if data.widget.showPagination %}
+      <div class="swiper-pagination header-swiper-pagination"></div>
+    {% endif %}
+    
+    <!-- Scroll Indicator -->
+    {% if data.widget.showScrollIndicator %}
+      <div class="header-scroll-indicator">
+        <div class="scroll-indicator-text">Scroll Down</div>
+        <div class="scroll-indicator-arrow">
+          <i class="bi bi-chevron-down"></i>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+```
+
+### Animation Configuration Options
+
+The widget supports various animation configurations through the data object:
+
+### Available AOS Animation Effects
+
+The widget supports all AOS animation effects:
+
+#### Fade animations:
+- `fade`
+- `fade-up`
+- `fade-down`
+- `fade-left`
+- `fade-right`
+- `fade-up-right`
+- `fade-up-left`
+- `fade-down-right`
+- `fade-down-left`
+
+#### Flip animations:
+- `flip-up`
+- `flip-down`
+- `flip-left`
+- `flip-right`
+
+#### Slide animations:
+- `slide-up`
+- `slide-down`
+- `slide-left`
+- `slide-right`
+
+#### Zoom animations:
+- `zoom-in`
+- `zoom-in-up`
+- `zoom-in-down`
+- `zoom-in-left`
+- `zoom-in-right`
+- `zoom-out`
+- `zoom-out-up`
+- `zoom-out-down`
+- `zoom-out-left`
+- `zoom-out-right`
+
+### Swiper.js Animation Effects
+
+The header slider also supports various Swiper.js effects:
+
+- `slide`: Default slide effect
+- `fade`: Fade transition between slides
+- `cube`: 3D cube effect
+- `coverflow`: Coverflow effect
+- `flip`: 3D flip effect
+- `cards`: Cards effect
+- `creative`: Creative custom effect
+
+## Configuration Options
+
+The header slider widget supports various configuration options:
+
+### Basic Settings
+- `autoplay`: Enable/disable automatic sliding
+- `autoplayDelay`: Delay between slides (in milliseconds)
+- `loop`: Enable/disable infinite loop
+- `speed`: Transition speed (in milliseconds)
+- `effect`: Transition effect type
+
+### Navigation Options
+- `showNavigation`: Show/hide navigation arrows
+- `showPagination`: Show/hide pagination dots
+- `showScrollIndicator`: Show/hide scroll indicator
+
+### Responsive Settings
+- `slidesPerView`: Number of slides per view
+- `spaceBetween`: Space between slides
+- `breakpoints`: Responsive breakpoint configurations
+
+### Animation Settings
+- `animationEffects`: AOS animation effect
+- `animationDuration`: Animation duration
+- `animationDelay`: Animation delay
+- `animationEasing`: Animation easing function
+
+## Performance Considerations
+
+- **Lazy Loading**: Images are loaded on demand
+- **Optimized Animations**: Hardware-accelerated CSS transitions
+- **Memory Management**: Proper cleanup of event listeners
+- **Responsive Images**: Different image sizes for different screen sizes
+- **CDN Support**: Optimized for CDN delivery 
