@@ -1,15 +1,35 @@
 # Juniper UI Documentation
 
-**Project Version**: 2.0.0  
+**Documentation Version**: 2.0.0  
 **Last Updated**: 2024-12-19  
 **Framework**: ApostropheCMS 4.x, Bootstrap 5.3.x, Juniper UI 2.x  
 **License**: MIT
 
 ## Description
 
-Juniper UI is a comprehensive design system and component library built for ApostropheCMS 4.x applications. It provides a robust foundation of reusable components, utilities, and patterns that enable rapid development of modern, accessible, and responsive web applications.
+This repository contains comprehensive documentation for the Juniper UI design system and component library. Juniper UI is built for ApostropheCMS 4.x applications and provides a robust foundation of reusable components, utilities, and patterns for rapid development of modern, accessible, and responsive web applications.
 
-## Version Information
+## Documentation Structure
+
+```
+juniper-docs/
+├── README.mdx                    # Main documentation overview
+├── components/                   # Component documentation
+│   ├── accordion/                # Accordion widget docs
+│   ├── button/                   # Button component docs
+│   ├── headings/                 # Headings component docs
+│   ├── lists/                    # Lists component docs
+│   └── header-slider/            # Header slider widget docs
+├── widgets/                      # Widget documentation
+│   ├── accordion/                # Accordion widget docs
+│   ├── button/                   # Button widget docs
+│   └── header-slider/            # Header slider widget docs
+└── elements/                     # Element documentation
+    ├── headings/                 # Headings element docs
+    └── lists/                    # Lists element docs
+```
+
+## Version Information for Juniper project
 
 ### Core Framework Versions
 - **ApostropheCMS**: 4.x
@@ -53,122 +73,6 @@ Juniper UI is a comprehensive design system and component library built for Apos
     "autoprefixer": "^10.4.0"
   }
 }
-```
-
-#### CDN Links
-```html
-<!-- Bootstrap 5.3.2 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Swiper.js 11.0.0 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-<!-- AOS 2.3.1 -->
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-<!-- Bootstrap Icons 1.11.2 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
-```
-
-### Installation Instructions
-
-#### 1. Clone the Repository
-```bash
-git clone https://github.com/your-org/juniper-ui.git
-cd juniper-ui
-```
-
-#### 2. Install Dependencies
-```bash
-npm install
-```
-
-#### 3. Environment Setup
-```bash
-# Copy environment file
-cp .env.example .env
-
-# Set your theme
-export THEME=juniper
-```
-
-#### 4. Build Assets
-```bash
-# Development
-npm run dev
-
-# Production
-npm run build
-```
-
-#### 5. Start Development Server
-```bash
-npm start
-```
-
-## Usage Examples
-
-### Basic Implementation
-
-#### 1. Include Required Libraries
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juniper UI Example</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-    
-    <!-- AOS CSS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
-    
-    <!-- Juniper UI CSS -->
-    <link rel="stylesheet" href="/dist/css/juniper-ui.min.css">
-</head>
-<body>
-    <!-- Your content here -->
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    
-    <!-- AOS JS -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    
-    <!-- Juniper UI JS -->
-    <script src="/dist/js/juniper-ui.min.js"></script>
-</body>
-</html>
-```
-
-#### 2. Initialize Components
-```javascript
-// Initialize AOS
-AOS.init({
-    duration: 800,
-    easing: 'ease-out',
-    once: true
-});
-
-// Initialize Juniper UI components
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all Juniper components
-    JuniperUI.init();
-});
 ```
 
 ### Advanced Configurations
@@ -229,184 +133,6 @@ $juniper-breakpoints: (
     .custom-component {
         font-size: 1.25rem;
     }
-}
-```
-
-### Common Use Cases
-
-#### 1. Header Slider Implementation
-```html
-<section class="header-slider-widget" data-header-slider-widget>
-    <div class="swiper header-swiper">
-        <div class="swiper-wrapper">
-            <div class="swiper-slide header-slide">
-                <div class="header-slide-background" style="background-image: url('/hero-1.jpg')">
-                    <div class="header-slide-overlay"></div>
-                </div>
-                <div class="header-slide-content">
-                    <div class="container">
-                        <div class="row align-items-center min-vh-75">
-                            <div class="col-lg-6">
-                                <h1 class="header-slide-heading display-4 fw-bold text-white mb-4">
-                                    Welcome to Our Platform
-                                </h1>
-                                <p class="header-slide-subheading lead text-white-50 mb-4">
-                                    Discover amazing features and services
-                                </p>
-                                <div class="header-slide-buttons">
-                                    <a href="#" class="btn btn-primary btn-lg">Get Started</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="swiper-button-next header-swiper-button-next"></div>
-        <div class="swiper-button-prev header-swiper-button-prev"></div>
-        <div class="swiper-pagination header-swiper-pagination"></div>
-    </div>
-</section>
-```
-
-#### 2. Accordion Component
-```html
-<section class="accordion-widget" data-accordion-widget>
-    <div class="accordion-btn py-4 px-2 border-bottom border-dark-subtle">
-        <span class="lead fw-bold">Section 1</span>
-        <i class="accordion-icon lead fw-bold bi-plus-lg"></i>
-    </div>
-    <div class="accordion-panel">
-        <div class="accordion-inner-panel py-3">
-            <p>Content for section 1</p>
-        </div>
-    </div>
-</section>
-```
-
-#### 3. Button Component
-```html
-<div class="button-widget">
-    <a href="#" class="btn btn-primary btn-lg">
-        <i class="bi bi-arrow-right me-2"></i>
-        Primary Button
-    </a>
-    <a href="#" class="btn btn-outline-secondary btn-lg ms-3">
-        Secondary Button
-    </a>
-</div>
-```
-
-## Troubleshooting
-
-### Common Issues and Solutions
-
-#### 1. Components Not Initializing
-**Problem**: Juniper UI components not working
-**Solution**:
-```javascript
-// Check if libraries are loaded
-if (typeof Bootstrap !== 'undefined' && typeof Swiper !== 'undefined') {
-    // Initialize components
-    JuniperUI.init();
-} else {
-    console.error('Required libraries not loaded');
-}
-```
-
-#### 2. CSS Not Loading
-**Problem**: Styles not applying correctly
-**Solution**:
-```html
-<!-- Ensure proper CSS loading order -->
-<link href="bootstrap.min.css" rel="stylesheet">
-<link href="juniper-ui.min.css" rel="stylesheet">
-```
-
-#### 3. JavaScript Errors
-**Problem**: Console errors related to Juniper UI
-**Solution**:
-```javascript
-// Enable debug mode
-JuniperUI.init({
-    debug: true,
-    logLevel: 'verbose'
-});
-```
-
-#### 4. Responsive Issues
-**Problem**: Components not responsive on mobile
-**Solution**:
-```scss
-// Ensure proper viewport meta tag
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-// Check CSS media queries
-@media (max-width: 768px) {
-    .component {
-        // Mobile-specific styles
-    }
-}
-```
-
-#### 5. Performance Issues
-**Problem**: Slow loading or rendering
-**Solution**:
-```javascript
-// Optimize component loading
-JuniperUI.init({
-    lazyLoad: true,
-    preloadImages: false,
-    optimizeAnimations: true
-});
-```
-
-### Debug Information
-
-#### 1. Enable Debug Mode
-```javascript
-// Enable comprehensive debugging
-const debugConfig = {
-    debug: true,
-    logLevel: 'verbose',
-    performance: true,
-    errors: true
-};
-
-JuniperUI.init(debugConfig);
-```
-
-#### 2. Console Logging
-```javascript
-// Monitor component initialization
-JuniperUI.on('init', function(component) {
-    console.log('Component initialized:', component);
-});
-
-JuniperUI.on('error', function(error) {
-    console.error('Juniper UI Error:', error);
-});
-```
-
-#### 3. Performance Monitoring
-```javascript
-// Monitor performance metrics
-const startTime = performance.now();
-
-JuniperUI.on('ready', function() {
-    const endTime = performance.now();
-    console.log('Initialization time:', endTime - startTime, 'ms');
-});
-```
-
-#### 4. Browser Compatibility Check
-```javascript
-// Check browser support
-const browserSupport = JuniperUI.checkBrowserSupport();
-console.log('Browser support:', browserSupport);
-
-if (!browserSupport.supported) {
-    console.warn('Browser not fully supported:', browserSupport.issues);
 }
 ```
 
@@ -540,39 +266,34 @@ JuniperUI.monitor({
 
 ## Contributing
 
-### Development Setup
+### Documentation Setup
 ```bash
-# Fork and clone
-git clone https://github.com/your-username/juniper-ui.git
-cd juniper-ui
+# Fork and clone the documentation repository
+git clone https://github.com/your-username/juniper-docs.git
+cd juniper-docs
 
-# Install dependencies
-npm install
+# Create a new branch for your changes
+git checkout -b feature/update-documentation
 
-# Start development server
-npm run dev
+# Make your changes to the MDX files
+# Add new component documentation
+# Update existing examples
 
-# Run tests
-npm test
-
-# Build for production
-npm run build
+# Commit and push your changes
+git add .
+git commit -m "Add documentation for new component"
+git push origin feature/update-documentation
 ```
 
-### Code Standards
-- Follow ESLint configuration
-- Use Prettier for formatting
-- Write unit tests for components
-- Update documentation for changes
+### Documentation Standards
+- Follow the existing MDX structure and format
+- Include version information and dependencies
+- Provide comprehensive usage examples
+- Add troubleshooting sections for complex components
+- Update the main README when adding new components
+- Use clear, descriptive commit messages
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
-
-For support and questions:
-- **Documentation**: [docs.juniper-ui.com](https://docs.juniper-ui.com)
-- **Issues**: [GitHub Issues](https://github.com/your-org/juniper-ui/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/juniper-ui/discussions)
-- **Email**: support@juniper-ui.com
