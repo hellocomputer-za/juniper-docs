@@ -1,0 +1,473 @@
+# Header Slider Widget - Quick Reference
+
+## Essential Code Patterns
+
+### 1. Basic HTML Structure
+```html
+<section class="header-slider-widget" data-header-slider-widget>
+  <div class="swiper header-swiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide header-slide">
+        <div class="header-slide-background" data-background-image="/image.jpg">
+          <div class="header-slide-overlay"></div>
+        </div>
+        <div class="header-slide-content">
+          <div class="container">
+            <div class="row align-items-center min-vh-75">
+              <div class="col-lg-6">
+                <h1 class="header-slide-heading display-4 fw-bold text-white mb-4">Heading</h1>
+                <p class="header-slide-subheading lead text-white-50 mb-4">Subheading</p>
+                <div class="header-slide-buttons">
+                  <a href="#" class="btn btn-primary btn-lg">Action</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="swiper-button-next header-swiper-button-next"></div>
+    <div class="swiper-button-prev header-swiper-button-prev"></div>
+    <div class="swiper-pagination header-swiper-pagination"></div>
+  </div>
+</section>
+```
+
+### 2. ApostropheCMS Widget Player
+
+Widgets use the ApostropheCMS widget player system:
+
+```javascript
+export default () => {
+  apos.util.widgetPlayers['widget-name'] = {
+    selector: '[data-widget-name]',
+    player: async function (el) {
+      // Widget initialization
+    }
+  };
+};
+```
+
+### 3. Background Image Handling
+
+For dynamic background images, use data attributes:
+
+```html
+<div class="header-slide-background" data-background-image="/image.jpg">
+```
+
+```javascript
+// Initialize background images in widget player
+function initializeBackgroundImages(element) {
+  const backgrounds = element.querySelectorAll('.header-slide-background[data-background-image]');
+  backgrounds.forEach(el => {
+    const url = el.getAttribute('data-background-image');
+    if (url) el.style.backgroundImage = `url('${url}')`;
+  });
+}
+
+// Use in widget player
+apos.util.widgetPlayers['widget-name'] = {
+  selector: '[data-widget-name]',
+  player: async function (el) {
+    initializeBackgroundImages(el);
+  }
+};
+```
+
+### 4. JavaScript Initialization
+```javascript
+document.addEventListener('DOMContentLoaded', function() {
+  const headerSlider = document.querySelector('[data-header-slider-widget] .header-swiper');
+  
+  if (headerSlider) {
+    const swiper = new Swiper(headerSlider, {
+      loop: true,
+      effect: 'fade',
+      speed: 1000,
+      autoplay: { delay: 5000, disableOnInteraction: false },
+      navigation: {
+        nextEl: '.header-swiper-button-next',
+        prevEl: '.header-swiper-button-prev',
+      },
+      pagination: {
+        el: '.header-swiper-pagination',
+        clickable: true,
+        dynamicBullets: true,
+      },
+      breakpoints: {
+        320: { slidesPerView: 1, spaceBetween: 0 },
+        768: { slidesPerView: 1, spaceBetween: 0 },
+        1024: { slidesPerView: 1, spaceBetween: 0 }
+      }
+    });
+  }
+});
+```
+
+### 5. Core SCSS Variables
+```scss
+$header-slider-height: 100vh !default;
+$header-slider-min-height: 600px !default;
+$header-slide-overlay-opacity: 0.4 !default;
+$header-slide-overlay-color: #000 !default;
+$header-slide-heading-color: #fff !default;
+$header-slide-subheading-color: rgba(255, 255, 255, 0.8) !default;
+$header-slider-navigation-size: 3rem !default;
+$header-slider-pagination-size: 0.75rem !default;
+```
+
+### 6. Essential SCSS Styles
+```scss
+.header-slider-widget {
+  position: relative;
+  width: 100%;
+  height: $header-slider-height;
+  min-height: $header-slider-min-height;
+  overflow: hidden;
+  
+  .header-swiper {
+    width: 100%;
+    height: 100%;
+    
+    .swiper-slide {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+  
+  .header-slide-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: scale(1.1);
+    transition: transform 8s ease-out;
+    
+    .swiper-slide-active & {
+      transform: scale(1);
+    }
+  }
+  
+  .header-slide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity) 0%,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity * 0.7) 50%,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity * 0.3) 100%
+    );
+  }
+  
+  .header-slide-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+  }
+}
+```
+
+## Common Customizations
+
+### 1. Change Transition Effect
+```javascript
+// Options: 'slide', 'fade', 'cube', 'coverflow', 'flip', 'cards'
+effect: 'fade'
+```
+
+### 2. Custom Autoplay Settings
+```javascript
+autoplay: {
+  delay: 5000,           // 5 seconds
+  disableOnInteraction: false,
+  pauseOnMouseEnter: true,
+  waitForTransition: true
+}
+```
+
+### 3. Custom Navigation Styling
+```scss
+.header-swiper-button-next,
+.header-swiper-button-prev {
+  width: 4rem;
+  height: 4rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+  }
+}
+```
+
+### 4. Custom Theme Colors
+```scss
+// Dark theme
+.header-slider-theme-dark {
+  .header-slide-overlay {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.2) 100%);
+  }
+}
+
+// Light theme
+.header-slider-theme-light {
+  .header-slide-overlay {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 100%);
+  }
+  
+  .header-slide-heading {
+    color: var(--bs-dark);
+  }
+}
+```
+
+## Responsive Breakpoints
+
+### Mobile-First Approach
+```scss
+.header-slider-widget {
+  // Mobile (default)
+  height: 60vh;
+  min-height: 350px;
+  
+  // Tablet and up
+  @include media-breakpoint-up(md) {
+    height: 70vh;
+    min-height: 400px;
+  }
+  
+  // Desktop and up
+  @include media-breakpoint-up(lg) {
+    height: 80vh;
+    min-height: 500px;
+  }
+  
+  // Large desktop
+  @include media-breakpoint-up(xl) {
+    height: 100vh;
+    min-height: 600px;
+  }
+}
+```
+
+## Animation Patterns
+
+### 1. Slide Content Animation
+```javascript
+function animateSlideContent(slideIndex) {
+  const slides = document.querySelectorAll('.swiper-slide');
+  const currentSlide = slides[slideIndex];
+  
+  if (currentSlide) {
+    const elements = [
+      currentSlide.querySelector('.header-slide-heading'),
+      currentSlide.querySelector('.header-slide-subheading'),
+      currentSlide.querySelector('.header-slide-buttons')
+    ];
+    
+    elements.forEach((el, index) => {
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+          el.style.transition = 'all 0.8s ease-out';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, index * 300);
+      }
+    });
+  }
+}
+```
+
+### 2. AOS Animation Integration
+```javascript
+// Initialize AOS
+AOS.init({
+  duration: 800,
+  easing: 'ease-out',
+  once: true,
+  offset: 100
+});
+```
+
+```html
+<!-- Use AOS attributes for animations -->
+<h1 data-aos="fade-up" data-aos-delay="300">Heading</h1>
+<p data-aos="fade-up" data-aos-delay="600">Subheading</p>
+<div data-aos="fade-up" data-aos-delay="900">Buttons</div>
+```
+
+## Accessibility Features
+
+### 1. ARIA Labels
+```html
+<section class="header-slider-widget" 
+         data-header-slider-widget 
+         role="region" 
+         aria-label="Hero slider">
+  <div class="swiper header-swiper" role="application" aria-label="Image carousel">
+    <!-- Content -->
+  </div>
+</section>
+```
+
+### 2. AOS Configuration
+```javascript
+// Configure AOS for header slider
+AOS.init({
+  duration: 800,
+  easing: 'ease-out',
+  once: true,
+  offset: 100,
+  disable: 'mobile'
+});
+
+// Refresh AOS on slide change
+swiper.on('slideChange', function() {
+  AOS.refresh();
+});
+```
+
+## Performance Optimizations
+
+### 1. Lazy Loading
+```html
+<div class="header-slide-background">
+  <picture>
+    <source media="(min-width: 1200px)" srcset="/images/hero-large.jpg">
+    <source media="(min-width: 768px)" srcset="/images/hero-medium.jpg">
+    <img src="/images/hero-small.jpg" alt="Hero image" loading="lazy">
+  </picture>
+</div>
+```
+
+### 2. Memory Management
+```javascript
+function destroyHeaderSlider() {
+  if (swiper) {
+    swiper.destroy(true, true);
+    swiper = null;
+  }
+}
+
+window.addEventListener('beforeunload', destroyHeaderSlider);
+```
+
+## Common Issues & Solutions
+
+### 1. Slides Not Transitioning
+```javascript
+// Check initialization
+if (!swiper || !swiper.initialized) {
+  console.error('Swiper not properly initialized');
+  return;
+}
+```
+
+### 2. Images Not Loading
+```scss
+.header-slide-background {
+  background-color: #f8f9fa; // Fallback
+  background-image: url('/path/to/image.jpg');
+}
+```
+
+### 3. Mobile Touch Issues
+```javascript
+const swiperConfig = {
+  touchRatio: 1,
+  touchAngle: 45,
+  grabCursor: true,
+  touchStartPreventDefault: false
+};
+```
+
+## AI Prompt Templates
+
+### Basic Implementation
+```
+"Create a header slider with:
+- 3 slides with background images
+- Main heading and subheading per slide
+- 2 CTA buttons per slide
+- Navigation arrows and pagination
+- Autoplay with 5-second intervals
+- Fade transition effect
+- Mobile responsive"
+```
+
+### Custom Styling
+```
+"Customize header slider with:
+- Color scheme: primary #007bff, secondary #6c757d
+- Typography: heading 3.5rem, subheading 1.5rem
+- Rounded button corners with hover effects
+- Overlay opacity: 0.5
+- Navigation size: 4rem
+- Content fade-in animations"
+```
+
+### Advanced Features
+```
+"Add to header slider:
+- Lazy loading for images
+- AOS animations for slide content
+- ARIA accessibility labels
+- Performance optimization
+- Error handling
+- Custom event handlers"
+```
+
+## Dependencies Checklist
+
+### Required Dependencies
+```json
+{
+  "dependencies": {
+    "bootstrap": "^5.3.2",
+    "swiper": "^11.0.0",
+    "bootstrap-icons": "^1.11.2",
+    "aos": "^2.3.1"
+  }
+}
+```
+
+### Import Statements
+```javascript
+import 'bootstrap';
+import Swiper from 'swiper';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+```
+
+## File Structure
+```
+header-slider/
+├── index.html          # Main HTML structure
+├── styles.scss         # SCSS styles
+├── script.js           # JavaScript initialization
+├── images/             # Background images
+└── README.md           # Component documentation
+```
+
+---
+
+*Use this quick reference for rapid development with AI assistance. Each pattern is tested and ready for production use.* 

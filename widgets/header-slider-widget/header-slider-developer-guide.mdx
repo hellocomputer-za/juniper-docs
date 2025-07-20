@@ -1,0 +1,972 @@
+# Header Slider Widget - Developer Guide
+
+## Overview
+
+This guide provides comprehensive documentation for creating and customizing header slider components using the Juniper UI framework. This documentation is designed to work seamlessly with AI assistants to help developers quickly implement professional header sliders.
+
+## Quick Start Template
+
+### Basic Implementation
+
+```html
+<!-- Basic Header Slider Structure -->
+<section class="header-slider-widget" data-header-slider-widget>
+  <div class="swiper header-swiper">
+    <div class="swiper-wrapper">
+      <!-- Slide 1 -->
+      <div class="swiper-slide header-slide">
+        <div class="header-slide-background" data-background-image="/path/to/image.jpg">
+          <div class="header-slide-overlay"></div>
+        </div>
+        <div class="header-slide-content">
+          <div class="container">
+            <div class="row align-items-center min-vh-75">
+              <div class="col-lg-6">
+                <h1 class="header-slide-heading display-4 fw-bold text-white mb-4">
+                  Your Main Heading
+                </h1>
+                <p class="header-slide-subheading lead text-white-50 mb-4">
+                  Your compelling subheading text goes here
+                </p>
+                <div class="header-slide-buttons">
+                  <a href="#" class="btn btn-primary btn-lg">Primary Action</a>
+                  <a href="#" class="btn btn-outline-light btn-lg">Secondary Action</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="swiper-button-next header-swiper-button-next"></div>
+    <div class="swiper-button-prev header-swiper-button-prev"></div>
+    
+    <!-- Pagination -->
+    <div class="swiper-pagination header-swiper-pagination"></div>
+  </div>
+</section>
+```
+
+### Required Dependencies
+
+```json
+{
+  "dependencies": {
+    "bootstrap": "^5.3.2",
+    "swiper": "^11.0.0",
+    "bootstrap-icons": "^1.11.2",
+    "aos": "^2.3.1"
+  }
+}
+```
+
+```javascript
+// Import dependencies in your main JavaScript file
+import 'bootstrap';
+import Swiper from 'swiper';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+```
+
+## Component Architecture
+
+### Core Structure Breakdown
+
+1. **Container Section** (`header-slider-widget`)
+   - Main wrapper with data attribute for JavaScript targeting
+   - Handles overall positioning and overflow
+
+2. **Swiper Container** (`header-swiper`)
+   - Swiper.js initialization target
+   - Controls slide transitions and effects
+
+3. **Slide Structure** (`swiper-slide header-slide`)
+   - Individual slide container
+   - Contains background, overlay, and content layers
+
+4. **Background Layer** (`header-slide-background`)
+   - Full-screen background image
+   - Supports CSS background properties
+
+5. **Overlay Layer** (`header-slide-overlay`)
+   - Semi-transparent overlay for text readability
+   - Gradient backgrounds for visual depth
+
+6. **Content Layer** (`header-slide-content`)
+   - Text content, headings, and call-to-action buttons
+   - Bootstrap grid system integration
+
+## JavaScript Implementation
+
+### ApostropheCMS Widget Player Pattern
+
+Widgets in ApostropheCMS use a widget player system. Here's the correct pattern:
+
+```javascript
+export default () => {
+  apos.util.widgetPlayers['widget-name'] = {
+    selector: '[data-widget-name]',
+    player: async function (el) {
+      // Widget initialization code here
+      // el is the widget element
+    }
+  };
+};
+```
+
+### Handling Dynamic Background Images
+
+For dynamic background images, use data attributes instead of inline styles:
+
+```html
+<!-- ❌ Avoid inline styles -->
+<div class="header-slide-background" style="background-image: url('/image.jpg')">
+
+<!-- ✅ Use data attributes -->
+<div class="header-slide-background" data-background-image="/image.jpg">
+```
+
+Then handle the background images in the widget player:
+
+```javascript
+// Initialize background images from data attributes
+function initializeBackgroundImages(element) {
+  const backgroundElements = element.querySelectorAll('.header-slide-background[data-background-image]');
+  
+  backgroundElements.forEach(el => {
+    const imageUrl = el.getAttribute('data-background-image');
+    if (imageUrl) {
+      el.style.backgroundImage = `url('${imageUrl}')`;
+    }
+  });
+}
+
+// Use in widget player
+apos.util.widgetPlayers['widget-name'] = {
+  selector: '[data-widget-name]',
+  player: async function (el) {
+    initializeBackgroundImages(el);
+  }
+};
+```
+
+### Basic Swiper Initialization
+
+```javascript
+document.addEventListener('DOMContentLoaded', function() {
+  const headerSlider = document.querySelector('[data-header-slider-widget] .header-swiper');
+  
+  if (headerSlider) {
+    const swiper = new Swiper(headerSlider, {
+      // Basic Configuration
+      loop: true,
+      effect: 'fade',
+      speed: 1000,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      
+      // Navigation
+      navigation: {
+        nextEl: '.header-swiper-button-next',
+        prevEl: '.header-swiper-button-prev',
+      },
+      
+      // Pagination
+      pagination: {
+        el: '.header-swiper-pagination',
+        clickable: true,
+        dynamicBullets: true,
+      },
+      
+      // Responsive Breakpoints
+      breakpoints: {
+        320: { slidesPerView: 1, spaceBetween: 0 },
+        768: { slidesPerView: 1, spaceBetween: 0 },
+        1024: { slidesPerView: 1, spaceBetween: 0 }
+      }
+    });
+  }
+});
+```
+
+### Advanced Configuration Options
+
+```javascript
+// Advanced Swiper Configuration
+const swiperConfig = {
+  // Transition Effects
+  effect: 'fade', // Options: 'slide', 'fade', 'cube', 'coverflow', 'flip', 'cards'
+  
+  // Autoplay Settings
+  autoplay: {
+    delay: 5000,
+    disableOnInteraction: false,
+    pauseOnMouseEnter: true,
+    waitForTransition: true
+  },
+  
+  // Navigation Settings
+  navigation: {
+    nextEl: '.header-swiper-button-next',
+    prevEl: '.header-swiper-button-prev',
+    hideOnClick: false,
+    disabledClass: 'swiper-button-disabled'
+  },
+  
+  // Pagination Settings
+  pagination: {
+    el: '.header-swiper-pagination',
+    type: 'bullets', // Options: 'bullets', 'fraction', 'progressbar', 'custom'
+    clickable: true,
+    dynamicBullets: true,
+    renderBullet: function(index, className) {
+      return '<span class="' + className + '"></span>';
+    }
+  },
+  
+  // Responsive Settings
+  breakpoints: {
+    320: {
+      slidesPerView: 1,
+      spaceBetween: 0,
+      effect: 'slide'
+    },
+    768: {
+      slidesPerView: 1,
+      spaceBetween: 0,
+      effect: 'fade'
+    },
+    1024: {
+      slidesPerView: 1,
+      spaceBetween: 0,
+      effect: 'fade'
+    }
+  },
+  
+  // Event Handlers
+  on: {
+    init: function() {
+      console.log('Header slider initialized');
+      animateSlideContent(0);
+    },
+    slideChange: function() {
+      animateSlideContent(this.activeIndex);
+    },
+    slideChangeTransitionStart: function() {
+      // Handle transition start
+    },
+    slideChangeTransitionEnd: function() {
+      // Handle transition end
+    }
+  }
+};
+```
+
+## SCSS Styling Guide
+
+### Core Variables
+
+```scss
+// Header Slider Variables - Customize these for your theme
+$header-slider-height: 100vh !default;
+$header-slider-min-height: 600px !default;
+$header-slide-overlay-opacity: 0.4 !default;
+$header-slide-overlay-color: #000 !default;
+$header-slide-content-padding: 2rem !default;
+$header-slide-heading-color: #fff !default;
+$header-slide-subheading-color: rgba(255, 255, 255, 0.8) !default;
+$header-slider-navigation-size: 3rem !default;
+$header-slider-pagination-size: 0.75rem !default;
+$header-scroll-indicator-size: 2rem !default;
+```
+
+### Basic Styling Structure
+
+```scss
+.header-slider-widget {
+  position: relative;
+  width: 100%;
+  height: $header-slider-height;
+  min-height: $header-slider-min-height;
+  overflow: hidden;
+  
+  // Swiper container
+  .header-swiper {
+    width: 100%;
+    height: 100%;
+    
+    .swiper-wrapper {
+      height: 100%;
+    }
+    
+    .swiper-slide {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+  
+  // Slide background with zoom effect
+  .header-slide-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: scale(1.1);
+    transition: transform 8s ease-out;
+    
+    .swiper-slide-active & {
+      transform: scale(1);
+    }
+  }
+  
+  // Overlay for text readability
+  .header-slide-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity) 0%,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity * 0.7) 50%,
+      rgba($header-slide-overlay-color, $header-slide-overlay-opacity * 0.3) 100%
+    );
+  }
+}
+```
+
+### Typography and Content Styling
+
+```scss
+// Content container
+.header-slide-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: $header-slide-content-padding 0;
+  
+  .container {
+    width: 100%;
+  }
+}
+
+// Heading styles
+.header-slide-heading {
+  color: $header-slide-heading-color;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  
+  @include media-breakpoint-down(md) {
+    font-size: 2.5rem;
+  }
+  
+  @include media-breakpoint-down(sm) {
+    font-size: 2rem;
+  }
+}
+
+// Subheading styles
+.header-slide-subheading {
+  color: $header-slide-subheading-color;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  
+  @include media-breakpoint-down(md) {
+    font-size: 1.125rem;
+  }
+}
+
+// Button container
+.header-slide-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  
+  .btn {
+    min-width: 140px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  @include media-breakpoint-down(sm) {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+```
+
+## Animation Implementation
+
+### Slide Content Animation
+
+```javascript
+// Custom slide content animation function
+function animateSlideContent(slideIndex) {
+  const slides = document.querySelectorAll('.swiper-slide');
+  const currentSlide = slides[slideIndex];
+  
+  if (currentSlide) {
+    const heading = currentSlide.querySelector('.header-slide-heading');
+    const subheading = currentSlide.querySelector('.header-slide-subheading');
+    const buttons = currentSlide.querySelector('.header-slide-buttons');
+    
+    // Reset animations
+    [heading, subheading, buttons].forEach(el => {
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+      }
+    });
+    
+    // Animate in sequence
+    setTimeout(() => {
+      if (heading) {
+        heading.style.transition = 'all 0.8s ease-out';
+        heading.style.opacity = '1';
+        heading.style.transform = 'translateY(0)';
+      }
+    }, 300);
+    
+    setTimeout(() => {
+      if (subheading) {
+        subheading.style.transition = 'all 0.8s ease-out';
+        subheading.style.opacity = '1';
+        subheading.style.transform = 'translateY(0)';
+      }
+    }, 600);
+    
+    setTimeout(() => {
+      if (buttons) {
+        buttons.style.transition = 'all 0.8s ease-out';
+        buttons.style.opacity = '1';
+        buttons.style.transform = 'translateY(0)';
+      }
+    }, 900);
+  }
+}
+```
+
+### AOS Animation Integration
+
+```javascript
+// Initialize AOS for slide content animations
+document.addEventListener('DOMContentLoaded', function() {
+  AOS.init({
+    duration: 800,
+    easing: 'ease-out',
+    once: true,
+    offset: 100
+  });
+});
+```
+
+```html
+<!-- Use AOS attributes for slide content animations -->
+<h1 class="header-slide-heading display-4 fw-bold text-white mb-4" 
+    data-aos="fade-up" 
+    data-aos-delay="300">
+  Your Main Heading
+</h1>
+<p class="header-slide-subheading lead text-white-50 mb-4" 
+   data-aos="fade-up" 
+   data-aos-delay="600">
+  Your compelling subheading text goes here
+</p>
+<div class="header-slide-buttons" 
+     data-aos="fade-up" 
+     data-aos-delay="900">
+  <a href="#" class="btn btn-primary btn-lg">Primary Action</a>
+  <a href="#" class="btn btn-outline-light btn-lg">Secondary Action</a>
+</div>
+```
+
+## Responsive Design
+
+### Breakpoint Strategy
+
+```scss
+// Responsive adjustments
+@include media-breakpoint-down(lg) {
+  .header-slider-widget {
+    height: 80vh;
+    min-height: 500px;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .header-slider-widget {
+    height: 70vh;
+    min-height: 400px;
+    
+    .header-slide-content {
+      padding: 1rem 0;
+    }
+    
+    .header-slide-heading {
+      font-size: 2.5rem;
+    }
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .header-slider-widget {
+    height: 60vh;
+    min-height: 350px;
+    
+    .header-slide-heading {
+      font-size: 2rem;
+    }
+    
+    .header-slide-buttons {
+      flex-direction: column;
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+```
+
+### Mobile-First Approach
+
+```scss
+// Mobile-first responsive design
+.header-slider-widget {
+  // Base mobile styles
+  height: 60vh;
+  min-height: 350px;
+  
+  // Tablet and up
+  @include media-breakpoint-up(md) {
+    height: 70vh;
+    min-height: 400px;
+  }
+  
+  // Desktop and up
+  @include media-breakpoint-up(lg) {
+    height: 80vh;
+    min-height: 500px;
+  }
+  
+  // Large desktop
+  @include media-breakpoint-up(xl) {
+    height: 100vh;
+    min-height: 600px;
+  }
+}
+```
+
+## Customization Examples
+
+### Theme Variations
+
+```scss
+// Dark theme
+.header-slider-theme-dark {
+  .header-slide-overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+  }
+}
+
+// Light theme
+.header-slider-theme-light {
+  .header-slide-overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+  }
+  
+  .header-slide-heading {
+    color: var(--bs-dark);
+    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+  }
+  
+  .header-slide-subheading {
+    color: rgba(0, 0, 0, 0.8);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+  }
+}
+```
+
+### Custom Effects
+
+```scss
+// Parallax effect
+.header-slider-parallax {
+  .header-slide-background {
+    transform: translateY(0) scale(1.1);
+    transition: transform 8s ease-out;
+    
+    .swiper-slide-active & {
+      transform: translateY(-20px) scale(1);
+    }
+  }
+}
+
+// Ken Burns effect using CSS transforms
+.header-slider-kenburns {
+  .header-slide-background {
+    transform: scale(1.1) translate(0, 0);
+    transition: transform 8s ease-out;
+    
+    .swiper-slide-active & {
+      transform: scale(1) translate(-2%, -1%);
+    }
+  }
+}
+```
+
+## Performance Optimization
+
+### Image Optimization
+
+```html
+<!-- Responsive images with srcset -->
+<div class="header-slide-background">
+  <picture>
+    <source media="(min-width: 1200px)" srcset="/images/hero-large.jpg">
+    <source media="(min-width: 768px)" srcset="/images/hero-medium.jpg">
+    <img src="/images/hero-small.jpg" alt="Hero image" loading="lazy">
+  </picture>
+</div>
+```
+
+### Lazy Loading Implementation
+
+```javascript
+// Lazy loading for images
+const lazyImages = document.querySelectorAll('.header-slide-background');
+const imageObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const img = entry.target;
+      img.src = img.dataset.src;
+      img.classList.remove('lazy');
+      observer.unobserve(img);
+    }
+  });
+});
+
+lazyImages.forEach(img => imageObserver.observe(img));
+```
+
+### Memory Management
+
+```javascript
+// Proper cleanup for Swiper instances
+function destroyHeaderSlider() {
+  if (swiper) {
+    swiper.destroy(true, true);
+    swiper = null;
+  }
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', destroyHeaderSlider);
+```
+
+## Accessibility Features
+
+### ARIA Labels and Roles
+
+```html
+<section class="header-slider-widget" 
+         data-header-slider-widget 
+         role="region" 
+         aria-label="Hero slider">
+  <div class="swiper header-swiper" role="application" aria-label="Image carousel">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide header-slide" role="group" aria-label="Slide 1 of 3">
+        <!-- Slide content -->
+      </div>
+    </div>
+    
+    <!-- Navigation with proper labels -->
+    <button class="swiper-button-prev header-swiper-button-prev" 
+            aria-label="Previous slide"></button>
+    <button class="swiper-button-next header-swiper-button-next" 
+            aria-label="Next slide"></button>
+    
+    <!-- Pagination with proper labels -->
+    <div class="swiper-pagination header-swiper-pagination" 
+         role="navigation" 
+         aria-label="Slide navigation"></div>
+  </div>
+</section>
+```
+
+### AOS Animation Configuration
+
+```javascript
+// Configure AOS for optimal performance with header slider
+AOS.init({
+  duration: 800,
+  easing: 'ease-out',
+  once: true,
+  offset: 100,
+  disable: 'mobile' // Disable on mobile for better performance
+});
+
+// Refresh AOS on slide change
+swiper.on('slideChange', function() {
+  AOS.refresh();
+});
+```
+
+## Testing and Debugging
+
+### Console Logging
+
+```javascript
+// Debug logging for development
+const debugMode = true;
+
+function logSliderEvent(event, data) {
+  if (debugMode) {
+    console.log(`Header Slider - ${event}:`, data);
+  }
+}
+
+// Add to Swiper configuration
+on: {
+  init: function() {
+    logSliderEvent('Initialized', { slides: this.slides.length });
+  },
+  slideChange: function() {
+    logSliderEvent('Slide Changed', { 
+      activeIndex: this.activeIndex,
+      realIndex: this.realIndex 
+    });
+  }
+}
+```
+
+### Performance Monitoring
+
+```javascript
+// Performance monitoring
+const performanceObserver = new PerformanceObserver((list) => {
+  list.getEntries().forEach((entry) => {
+    if (entry.name.includes('header-slider')) {
+      console.log('Header Slider Performance:', entry);
+    }
+  });
+});
+
+performanceObserver.observe({ entryTypes: ['measure'] });
+
+// Measure slide transitions
+performance.mark('slide-transition-start');
+// ... transition code ...
+performance.mark('slide-transition-end');
+performance.measure('header-slider-transition', 'slide-transition-start', 'slide-transition-end');
+```
+
+## Common Issues and Solutions
+
+### Issue: Slides Not Transitioning
+```javascript
+// Solution: Check Swiper initialization
+if (!swiper || !swiper.initialized) {
+  console.error('Swiper not properly initialized');
+  return;
+}
+
+// Reinitialize if needed
+if (swiper.destroyed) {
+  swiper.init();
+}
+```
+
+### Issue: Images Not Loading
+```scss
+// Solution: Add fallback styles
+.header-slide-background {
+  background-color: #f8f9fa; // Fallback color
+  background-image: url('/path/to/image.jpg');
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+  }
+}
+```
+
+### Issue: Mobile Touch Not Working
+```javascript
+// Solution: Enable touch events
+const swiperConfig = {
+  touchRatio: 1,
+  touchAngle: 45,
+  grabCursor: true,
+  touchStartPreventDefault: false,
+  touchMoveStopPropagation: false
+};
+```
+
+## Integration with AI Assistants
+
+### Prompt Templates for AI
+
+When working with AI assistants, use these prompt templates:
+
+#### Basic Implementation
+```
+"Create a header slider component with the following specifications:
+- 3 slides with different background images
+- Main heading and subheading for each slide
+- 2 call-to-action buttons per slide
+- Navigation arrows and pagination dots
+- Autoplay with 5-second intervals
+- Fade transition effect
+- Mobile responsive design"
+```
+
+#### Custom Styling
+```
+"Customize the header slider with:
+- Custom color scheme: primary #007bff, secondary #6c757d
+- Typography: heading font-size 3.5rem, subheading 1.5rem
+- Button styles: rounded corners, hover effects
+- Overlay opacity: 0.5
+- Navigation button size: 4rem
+- Custom animations: slide content fade-in from bottom"
+```
+
+#### Advanced Features
+```
+"Add advanced features to the header slider:
+- Lazy loading for images
+- AOS animations for slide content
+- Accessibility features (ARIA labels)
+- Performance optimization
+- Custom event handlers
+- Error handling and fallbacks"
+```
+
+### Code Generation Guidelines
+
+1. **Always include required dependencies**
+2. **Use semantic HTML structure**
+3. **Implement responsive design patterns**
+4. **Add accessibility features**
+5. **Include error handling**
+6. **Optimize for performance**
+7. **Add proper documentation comments**
+
+## Best Practices
+
+### Avoid Inline Styles
+
+**❌ Don't use inline styles in HTML templates:**
+
+```html
+<!-- Avoid this -->
+<div class="header-slide-background" style="background-image: url('/image.jpg')">
+<div class="widget" style="background-color: #007bff; padding: 2rem;">
+```
+
+**✅ Use data attributes and CSS classes instead:**
+
+```html
+<!-- Use this approach -->
+<div class="header-slide-background" data-background-image="/image.jpg">
+<div class="widget widget--primary widget--padding-large">
+```
+
+**Benefits:**
+- Separation of concerns (HTML for structure, CSS for styling)
+- Better maintainability and reusability
+- Easier to debug and modify
+- Better performance (CSS classes are cached)
+- Consistent with modern web development practices
+
+### Code Organization
+- Separate HTML, CSS, and JavaScript into different files
+- Use CSS custom properties for theming
+- Implement modular JavaScript functions
+- Follow naming conventions consistently
+
+### Performance
+- Optimize images for web delivery
+- Use lazy loading for non-critical resources
+- Minimize DOM manipulations
+- Implement proper cleanup procedures
+
+### Accessibility
+- Provide alternative text for images
+- Use semantic HTML elements
+- Implement proper ARIA labels
+- Test with screen readers
+
+### Browser Compatibility
+- Test across different browsers
+- Use feature detection for advanced features
+- Provide fallbacks for older browsers
+- Consider progressive enhancement
+
+## Resources and References
+
+### Official Documentation
+- [Swiper.js Documentation](https://swiperjs.com/swiper-api)
+- [Bootstrap 5 Documentation](https://getbootstrap.com/docs/5.3/)
+- [AOS Documentation](https://michalsnik.github.io/aos/)
+
+### Useful Tools
+- [Image Optimization Tools](https://squoosh.app/)
+- [CSS Grid Generator](https://cssgrid-generator.netlify.app/)
+- [Flexbox Playground](https://codepen.io/enxaneta/full/adLPwv/)
+
+### Community Resources
+- [Stack Overflow - Swiper.js](https://stackoverflow.com/questions/tagged/swiper.js)
+- [GitHub Issues - Swiper.js](https://github.com/nolimits4web/swiper/issues)
+- [CSS-Tricks - Carousel Techniques](https://css-tricks.com/tag/carousel/)
+
+---
+
+*This documentation is designed to be comprehensive and AI-friendly. Use these patterns and examples to create robust header slider components with the assistance of AI tools.* 
